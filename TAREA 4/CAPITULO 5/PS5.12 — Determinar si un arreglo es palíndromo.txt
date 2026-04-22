@@ -1,0 +1,24 @@
+#include <stdio.h>
+
+int main(void){
+    int N, V[100], ok=1;
+
+    printf("N: ");
+    scanf("%d",&N);
+
+    for(int i=0;i<N;i++){
+        printf("V[%d]: ", i);
+        scanf("%d",&V[i]);
+    }
+
+    for(int i=0;i<N/2;i++){
+        if(V[i] != V[N-1-i]){
+            ok=0; break;
+        }
+    }
+
+    if(ok) printf("ES palindromo\n");
+    else printf("NO es palindromo\n");
+
+    return 0;
+}

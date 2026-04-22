@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+int main(void){
+    int N,M;
+    int A[200], B[200], Basc[200], C[400];
+
+    printf("N: "); scanf("%d",&N);
+    printf("M: "); scanf("%d",&M);
+
+    printf("VEC1 (ASC):\n");
+    for(int i=0;i<N;i++){ printf("A[%d]: ", i); scanf("%d",&A[i]); }
+
+    printf("VEC2 (DESC):\n");
+    for(int i=0;i<M;i++){ printf("B[%d]: ", i); scanf("%d",&B[i]); }
+
+    for(int i=0;i<M;i++) Basc[i] = B[M-1-i]; /* ahora ASC */
+
+    int i=0,j=0,k=0;
+    while(i<N && j<M){
+        if(A[i] <= Basc[j]) C[k++] = A[i++];
+        else C[k++] = Basc[j++];
+    }
+    while(i<N) C[k++] = A[i++];
+    while(j<M) C[k++] = Basc[j++];
+
+    printf("Mezclado ASC:\n");
+    for(int t=0;t<N+M;t++) printf("%d%s", C[t], (t==N+M-1)?"\n":" ");
+
+    return 0;
+}

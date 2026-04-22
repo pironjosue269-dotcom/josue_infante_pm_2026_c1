@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+int main(void){
+    int NUM;
+    double res = 1.0;
+
+    printf("NUM (terminos): ");
+    scanf("%d", &NUM);
+
+    if(NUM < 1){
+        printf("NUM debe ser >= 1\n");
+        return 0;
+    }
+
+    for(int i=2; i<=NUM; i++){
+        double term = 1.0 / (double)i;
+        if(i % 2 == 0) res *= term;  // multiplica
+        else          res /= term;  // divide
+    }
+
+    printf("Resultado: %.10f\n", res);
+    return 0;
+}

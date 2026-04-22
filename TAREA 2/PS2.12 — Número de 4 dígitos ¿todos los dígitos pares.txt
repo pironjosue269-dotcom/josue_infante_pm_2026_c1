@@ -1,0 +1,25 @@
+#include <stdio.h>
+
+int main(void){
+    int NUM;
+
+    printf("NUM (4 digitos): ");
+    scanf("%d", &NUM);
+
+    if (NUM < 1000 || NUM > 9999){
+        printf("No es de 4 digitos\n");
+        return 0;
+    }
+
+    int d1 = NUM / 1000;
+    int d2 = (NUM / 100) % 10;
+    int d3 = (NUM / 10) % 10;
+    int d4 = NUM % 10;
+
+    if ((d1%2==0) && (d2%2==0) && (d3%2==0) && (d4%2==0))
+        printf("SI, todos pares\n");
+    else
+        printf("NO, no todos pares\n");
+
+    return 0;
+}

@@ -1,0 +1,17 @@
+#include <stdio.h>
+
+int main(void){
+    double COM, desc, pagar;
+
+    printf("Monto de compra: ");
+    scanf("%lf", &COM);
+
+    if (COM < 800) desc = 0.0;
+    else if (COM <= 1500) desc = 0.10;
+    else if (COM <= 5000) desc = 0.15;
+    else desc = 0.20;
+
+    pagar = COM * (1.0 - desc);
+    printf("Pago final: %.2f\n", pagar);
+    return 0;
+}

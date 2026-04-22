@@ -1,0 +1,37 @@
+Resumen capítulos 1–2–3–4 Matemática para la Computación
+
+Capítulo 1: Sistemas numéricos
+
+Concepto de sistema de numeración: base, dígitos y valor posicional.
+
+Conversión entre decimal, binario, octal y hexadecimal.
+
+Operaciones básicas en binario y cómo se representan números en computadora (rango y signo).
+
+Capítulo 2: Métodos de conteo
+
+Regla de la suma y regla del producto.
+
+Factorial.
+
+Permutaciones y combinaciones (con y sin repetición).
+
+Coeficientes binomiales, triángulo de Pascal y binomio de Newton.
+
+Capítulo 3: Conjuntos
+
+Qué es un conjunto, pertenencia y subconjuntos.
+
+Operaciones: unión, intersección, diferencia y complemento.
+
+Diagramas de Venn y leyes básicas de conjuntos.
+
+Capítulo 4: Lógica matemática
+
+Proposiciones y conectores: NO, Y, O, SI…ENTONCES, SI Y SOLO SI.
+
+Tablas de verdad.
+
+Equivalencias lógicas, tautologías y contradicciones.
+
+Uso para razonamiento formal en programación y circuitos.

@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+/* Replica del programa 4.22 (para ver la salida) */
+
+int pal(int x, int y, int *b){
+    int c;
+    *b = x * y;
+    c = (*b) + y;
+    x++;
+    y = y * (y + 1);
+    printf("\n%d %d %d %d", *b, c, x, y);
+    return x;
+}
+
+int main(void){
+    int a,b,c,d;
+
+    a = 2;
+    c = 3;
+    d = 5;
+
+    a = pal(c, d, &b);
+    printf("\n%d %d %d %d", a, b, c, d);
+
+    b = 4;
+    b = pal(b, a, &b);
+    printf("\n%d %d %d %d\n", a, b, c, d);
+
+    return 0;
+}

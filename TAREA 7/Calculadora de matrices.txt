@@ -1,0 +1,421 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_LINE 4096
+
+typedef struct {
+    int rows;
+    int cols;
+    double **data;
+} Matrix;
+
+void clearInputBuffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {}
+}
+
+int isBlankLine(const char *line) {
+    while (*line) {
+        if (!isspace((unsigned char)*line)) return 0;
+        line++;
+    }
+    return 1;
+}
+
+Matrix *createMatrix(int rows, int cols) {
+    int i;
+    Matrix *m = (Matrix *)malloc(sizeof(Matrix));
+    if (m == NULL) return NULL;
+
+    m->rows = rows;
+    m->cols = cols;
+    m->data = (double **)malloc(rows * sizeof(double *));
+    if (m->data == NULL) {
+        free(m);
+        return NULL;
+    }
+
+    for (i = 0; i < rows; i++) {
+        m->data[i] = (double *)malloc(cols * sizeof(double));
+        if (m->data[i] == NULL) {
+            while (--i >= 0) free(m->data[i]);
+            free(m->data);
+            free(m);
+            return NULL;
+        }
+    }
+
+    return m;
+}
+
+void freeMatrix(Matrix *m) {
+    int i;
+    if (m == NULL) return;
+    for (i = 0; i < m->rows; i++) free(m->data[i]);
+    free(m->data);
+    free(m);
+}
+
+void printMatrix(const Matrix *m) {
+    int i, j;
+    if (m == NULL) {
+        printf("(matriz vacia)\n");
+        return;
+    }
+
+    printf("[%d x %d]\n", m->rows, m->cols);
+    for (i = 0; i < m->rows; i++) {
+        for (j = 0; j < m->cols; j++) {
+            printf("%10.2lf ", m->data[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+Matrix *inputMatrixKeyboard(void) {
+    int i, j, rows, cols;
+    Matrix *m;
+
+    printf("Filas: ");
+    if (scanf("%d", &rows) != 1 || rows <= 0) {
+        printf("Cantidad de filas invalida.\n");
+        clearInputBuffer();
+        return NULL;
+    }
+
+    printf("Columnas: ");
+    if (scanf("%d", &cols) != 1 || cols <= 0) {
+        printf("Cantidad de columnas invalida.\n");
+        clearInputBuffer();
+        return NULL;
+    }
+
+    m = createMatrix(rows, cols);
+    if (m == NULL) {
+        printf("No se pudo reservar memoria.\n");
+        return NULL;
+    }
+
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
+            printf("Valor [%d][%d]: ", i, j);
+            if (scanf("%lf", &m->data[i][j]) != 1) {
+                printf("Entrada invalida.\n");
+                clearInputBuffer();
+                freeMatrix(m);
+                return NULL;
+            }
+        }
+    }
+
+    return m;
+}
+
+int countColumns(const char *line) {
+    int count = 0;
+    char copy[MAX_LINE];
+    char *token;
+
+    strncpy(copy, line, MAX_LINE - 1);
+    copy[MAX_LINE - 1] = '\0';
+
+    token = strtok(copy, ",\r\n");
+    while (token != NULL) {
+        count++;
+        token = strtok(NULL, ",\r\n");
+    }
+
+    return count;
+}
+
+Matrix *loadMatrixFromCSV(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    char line[MAX_LINE];
+    int rows = 0, cols = -1, currentCols;
+    int i, j;
+    Matrix *m;
+
+    if (file == NULL) {
+        printf("No se pudo abrir el archivo.\n");
+        return NULL;
+    }
+
+    while (fgets(line, sizeof(line), file) != NULL) {
+        if (isBlankLine(line)) continue;
+        currentCols = countColumns(line);
+        if (currentCols == 0) continue;
+
+        if (cols == -1) cols = currentCols;
+        else if (currentCols != cols) {
+            printf("Error: todas las filas del archivo deben tener la misma cantidad de columnas.\n");
+            fclose(file);
+            return NULL;
+        }
+        rows++;
+    }
+
+    if (rows == 0 || cols <= 0) {
+        printf("El archivo no contiene una matriz valida.\n");
+        fclose(file);
+        return NULL;
+    }
+
+    rewind(file);
+
+    m = createMatrix(rows, cols);
+    if (m == NULL) {
+        printf("No se pudo reservar memoria.\n");
+        fclose(file);
+        return NULL;
+    }
+
+    i = 0;
+    while (fgets(line, sizeof(line), file) != NULL && i < rows) {
+        char *token;
+        if (isBlankLine(line)) continue;
+
+        token = strtok(line, ",\r\n");
+        j = 0;
+        while (token != NULL && j < cols) {
+            m->data[i][j] = atof(token);
+            j++;
+            token = strtok(NULL, ",\r\n");
+        }
+        i++;
+    }
+
+    fclose(file);
+    return m;
+}
+
+Matrix *addMatrices(const Matrix *a, const Matrix *b) {
+    int i, j;
+    Matrix *r;
+
+    if (a == NULL || b == NULL) {
+        printf("Debe cargar ambas matrices.\n");
+        return NULL;
+    }
+
+    if (a->rows != b->rows || a->cols != b->cols) {
+        printf("No se pueden sumar: dimensiones incompatibles.\n");
+        return NULL;
+    }
+
+    r = createMatrix(a->rows, a->cols);
+    if (r == NULL) return NULL;
+
+    for (i = 0; i < a->rows; i++)
+        for (j = 0; j < a->cols; j++)
+            r->data[i][j] = a->data[i][j] + b->data[i][j];
+
+    return r;
+}
+
+Matrix *subtractMatrices(const Matrix *a, const Matrix *b) {
+    int i, j;
+    Matrix *r;
+
+    if (a == NULL || b == NULL) {
+        printf("Debe cargar ambas matrices.\n");
+        return NULL;
+    }
+
+    if (a->rows != b->rows || a->cols != b->cols) {
+        printf("No se pueden restar: dimensiones incompatibles.\n");
+        return NULL;
+    }
+
+    r = createMatrix(a->rows, a->cols);
+    if (r == NULL) return NULL;
+
+    for (i = 0; i < a->rows; i++)
+        for (j = 0; j < a->cols; j++)
+            r->data[i][j] = a->data[i][j] - b->data[i][j];
+
+    return r;
+}
+
+Matrix *multiplyMatrices(const Matrix *a, const Matrix *b) {
+    int i, j, k;
+    Matrix *r;
+
+    if (a == NULL || b == NULL) {
+        printf("Debe cargar ambas matrices.\n");
+        return NULL;
+    }
+
+    if (a->cols != b->rows) {
+        printf("No se pueden multiplicar: columnas de A != filas de B.\n");
+        return NULL;
+    }
+
+    r = createMatrix(a->rows, b->cols);
+    if (r == NULL) return NULL;
+
+    for (i = 0; i < r->rows; i++) {
+        for (j = 0; j < r->cols; j++) {
+            r->data[i][j] = 0.0;
+            for (k = 0; k < a->cols; k++) {
+                r->data[i][j] += a->data[i][k] * b->data[k][j];
+            }
+        }
+    }
+
+    return r;
+}
+
+Matrix *transposeMatrix(const Matrix *a) {
+    int i, j;
+    Matrix *r;
+
+    if (a == NULL) {
+        printf("La matriz no esta cargada.\n");
+        return NULL;
+    }
+
+    r = createMatrix(a->cols, a->rows);
+    if (r == NULL) return NULL;
+
+    for (i = 0; i < a->rows; i++)
+        for (j = 0; j < a->cols; j++)
+            r->data[j][i] = a->data[i][j];
+
+    return r;
+}
+
+Matrix *readMatrixSource(const char *name) {
+    int option;
+    char filename[256];
+
+    printf("\nCargar matriz %s\n", name);
+    printf("1. Escribir desde teclado\n");
+    printf("2. Leer desde archivo CSV\n");
+    printf("Opcion: ");
+
+    if (scanf("%d", &option) != 1) {
+        clearInputBuffer();
+        return NULL;
+    }
+
+    if (option == 1) {
+        return inputMatrixKeyboard();
+    } else if (option == 2) {
+        printf("Nombre del archivo: ");
+        scanf("%255s", filename);
+        return loadMatrixFromCSV(filename);
+    } else {
+        printf("Opcion invalida.\n");
+        return NULL;
+    }
+}
+
+void showMenu(void) {
+    printf("\n===== CALCULADORA DE MATRICES =====\n");
+    printf("1. Cargar matriz A\n");
+    printf("2. Cargar matriz B\n");
+    printf("3. Mostrar matrices\n");
+    printf("4. Sumar A + B\n");
+    printf("5. Restar A - B\n");
+    printf("6. Multiplicar A * B\n");
+    printf("7. Transpuesta de A\n");
+    printf("8. Transpuesta de B\n");
+    printf("9. Salir\n");
+    printf("Seleccione una opcion: ");
+}
+
+int main(void) {
+    int option;
+    Matrix *A = NULL;
+    Matrix *B = NULL;
+    Matrix *R = NULL;
+
+    do {
+        showMenu();
+
+        if (scanf("%d", &option) != 1) {
+            printf("Entrada invalida.\n");
+            clearInputBuffer();
+            continue;
+        }
+
+        switch (option) {
+            case 1:
+                freeMatrix(A);
+                A = readMatrixSource("A");
+                if (A != NULL) printf("Matriz A cargada correctamente.\n");
+                break;
+
+            case 2:
+                freeMatrix(B);
+                B = readMatrixSource("B");
+                if (B != NULL) printf("Matriz B cargada correctamente.\n");
+                break;
+
+            case 3:
+                printf("\nMatriz A:\n");
+                printMatrix(A);
+                printf("\nMatriz B:\n");
+                printMatrix(B);
+                break;
+
+            case 4:
+                R = addMatrices(A, B);
+                if (R != NULL) {
+                    printf("\nResultado A + B:\n");
+                    printMatrix(R);
+                    freeMatrix(R);
+                }
+                break;
+
+            case 5:
+                R = subtractMatrices(A, B);
+                if (R != NULL) {
+                    printf("\nResultado A - B:\n");
+                    printMatrix(R);
+                    freeMatrix(R);
+                }
+                break;
+
+            case 6:
+                R = multiplyMatrices(A, B);
+                if (R != NULL) {
+                    printf("\nResultado A * B:\n");
+                    printMatrix(R);
+                    freeMatrix(R);
+                }
+                break;
+
+            case 7:
+                R = transposeMatrix(A);
+                if (R != NULL) {
+                    printf("\nTranspuesta de A:\n");
+                    printMatrix(R);
+                    freeMatrix(R);
+                }
+                break;
+
+            case 8:
+                R = transposeMatrix(B);
+                if (R != NULL) {
+                    printf("\nTranspuesta de B:\n");
+                    printMatrix(R);
+                    freeMatrix(R);
+                }
+                break;
+
+            case 9:
+                printf("Saliendo...\n");
+                break;
+
+            default:
+                printf("Opcion invalida.\n");
+        }
+    } while (option != 9);
+
+    freeMatrix(A);
+    freeMatrix(B);
+    return 0;
+}

@@ -1,0 +1,16 @@
+#include <stdio.h>
+
+int main(void){
+    double SAL, nuevo;
+
+    printf("Salario actual: ");
+    scanf("%lf", &SAL);
+
+    if (SAL < 18000) nuevo = SAL * 1.12;
+    else if (SAL <= 30000) nuevo = SAL * 1.08;
+    else if (SAL <= 50000) nuevo = SAL * 1.07;
+    else nuevo = SAL * 1.06;
+
+    printf("Nuevo salario: %.2f\n", nuevo);
+    return 0;
+}

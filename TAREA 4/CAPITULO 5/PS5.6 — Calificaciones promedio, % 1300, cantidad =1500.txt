@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+int main(void){
+    int N, aprob=0, ge1500=0;
+    double x, sum=0;
+
+    printf("N (1..100): ");
+    scanf("%d",&N);
+
+    for(int i=1;i<=N;i++){
+        printf("ALU%d: ", i);
+        scanf("%lf",&x);
+        sum += x;
+        if(x > 1300) aprob++;
+        if(x >= 1500) ge1500++;
+    }
+
+    printf("Promedio general: %.2f\n", sum/N);
+    printf("%% Aprobados (>1300): %.2f%%\n", 100.0*aprob/N);
+    printf("Cantidad >=1500: %d\n", ge1500);
+
+    return 0;
+}

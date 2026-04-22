@@ -1,0 +1,6 @@
+1) trueque(suma(&x), &x);  -> Incorrecta (suma recibe int, no int*)
+2) trueque(3,4);           -> Incorrecta (trueque recibe punteros)
+3) suma(10);               -> Correcta
+4) y = suma(10);           -> Correcta
+5) z = trueque(&x,&y);     -> Incorrecta (trueque es void, no retorna)
+6) trueque(&x,&y);         -> Correcta

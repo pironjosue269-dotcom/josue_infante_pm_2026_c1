@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+int main(void){
+    int MES;
+    double CAP, TAS, monto;
+
+    printf("MES (meses): ");
+    scanf("%d", &MES);
+
+    printf("CAP (capital): ");
+    scanf("%lf", &CAP);
+
+    printf("TAS (tasa mensual, ej 0.05): ");
+    scanf("%lf", &TAS);
+
+    monto = CAP;
+    for(int i=1;i<=MES;i++){
+        monto = monto + monto * TAS;
+    }
+
+    printf("Monto final: %.2f\n", monto);
+    return 0;
+}

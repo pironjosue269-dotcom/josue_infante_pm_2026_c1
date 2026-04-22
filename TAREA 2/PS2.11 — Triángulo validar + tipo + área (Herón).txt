@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <math.h>
+
+int main(void){
+    double L1, L2, L3, s, area;
+
+    printf("L1 L2 L3: ");
+    scanf("%lf %lf %lf", &L1, &L2, &L3);
+
+    // Validación de triángulo
+    if (L1 + L2 <= L3 || L1 + L3 <= L2 || L2 + L3 <= L1){
+        printf("NO es triangulo\n");
+        return 0;
+    }
+
+    // Tipo
+    if (L1 == L2 && L2 == L3) printf("Equilatero\n");
+    else if (L1 == L2 || L1 == L3 || L2 == L3) printf("Isosceles\n");
+    else printf("Escaleno\n");
+
+    // Área (Herón)
+    s = (L1 + L2 + L3) / 2.0;
+    area = sqrt(s * (s - L1) * (s - L2) * (s - L3));
+    printf("Area: %.6f\n", area);
+
+    return 0;
+}

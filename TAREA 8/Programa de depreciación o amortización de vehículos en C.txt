@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void generarTabla(FILE *archivo, double valorInicial, double valorFinal, int meses);
+void imprimirLinea(FILE *archivo);
+void imprimirEncabezado(FILE *archivo);
+
+int main() {
+    int opcion;
+    double valorInicial, valorFinal;
+    int meses;
+    FILE *archivo;
+
+    printf("TAREA 8 - Calculo de depreciacion o amortizacion de vehiculos\n");
+    printf("1. Valor inicial, valor final y tiempo\n");
+    printf("2. Valor inicial y tiempo de amortizacion\n");
+    printf("Seleccione una opcion: ");
+    scanf("%d", &opcion);
+
+    if (opcion == 1) {
+        printf("Ingrese el valor inicial del vehiculo: ");
+        scanf("%lf", &valorInicial);
+
+        printf("Ingrese el valor final del vehiculo: ");
+        scanf("%lf", &valorFinal);
+
+        printf("Ingrese el tiempo de amortizacion en meses: ");
+        scanf("%d", &meses);
+    } else if (opcion == 2) {
+        printf("Ingrese el valor inicial del vehiculo: ");
+        scanf("%lf", &valorInicial);
+
+        printf("Ingrese el tiempo de amortizacion en meses: ");
+        scanf("%d", &meses);
+
+        valorFinal = 0.0;
+    } else {
+        printf("Opcion no valida.\n");
+        return 1;
+    }
+
+    if (valorInicial <= 0 || meses <= 0 || valorFinal < 0 || valorFinal > valorInicial) {
+        printf("Datos invalidos.\n");
+        return 1;
+    }
+
+    archivo = fopen("tabla_amortizacion.txt", "w");
+    if (archivo == NULL) {
+        printf("No se pudo crear el archivo.\n");
+        return 1;
+    }
+
+    printf("\nTABLA DE AMORTIZACION / DEPRECIACION\n\n");
+    fprintf(archivo, "TABLA DE AMORTIZACION / DEPRECIACION\n\n");
+
+    generarTabla(stdout, valorInicial, valorFinal, meses);
+    generarTabla(archivo, valorInicial, valorFinal, meses);
+
+    fclose(archivo);
+
+    printf("\nLa tabla fue guardada en el archivo: tabla_amortizacion.txt\n");
+
+    return 0;
+}
+
+void generarTabla(FILE *archivo, double valorInicial, double valorFinal, int meses) {
+    double depreciacionMensual;
+    double valorActual;
+    int mes;
+
+    depreciacionMensual = (valorInicial - valorFinal) / meses;
+    valorActual = valorInicial;
+
+    fprintf(archivo, "Valor inicial : %.2lf\n", valorInicial);
+    fprintf(archivo, "Valor final   : %.2lf\n", valorFinal);
+    fprintf(archivo, "Tiempo (meses): %d\n", meses);
+    fprintf(archivo, "Depreciacion mensual: %.2lf\n\n", depreciacionMensual);
+
+    imprimirLinea(archivo);
+    imprimirEncabezado(archivo);
+    imprimirLinea(archivo);
+
+    for (mes = 1; mes <= meses; mes++) {
+        double depreciadoAcumulado = depreciacionMensual * mes;
+        valorActual = valorInicial - depreciadoAcumulado;
+
+        if (valorActual < valorFinal) {
+            valorActual = valorFinal;
+        }
+
+        fprintf(archivo, "| %-5d | %-18.2lf | %-20.2lf | %-18.2lf |\n",
+                mes, depreciacionMensual, depreciadoAcumulado, valorActual);
+    }
+
+    imprimirLinea(archivo);
+}
+
+void imprimirLinea(FILE *archivo) {
+    fprintf(archivo, "+-------+--------------------+----------------------+--------------------+\n");
+}
+
+void imprimirEncabezado(FILE *archivo) {
+    fprintf(archivo, "| Mes   | Depreciacion Mes   | Depreciado Acumulado | Valor en Libros    |\n");
+}

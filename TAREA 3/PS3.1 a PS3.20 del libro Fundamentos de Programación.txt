@@ -1,0 +1,455 @@
+/*
+  Capítulo 3 - Problemas Suplementarios 
+  Libro: Fundamentos de Programación
+
+  Compilar: gcc ps3.c -o ps3 -lm
+*/
+
+#include <stdio.h>
+#include <math.h>
+
+/* ---------- Utilidades ---------- */
+
+int es_primo(int n) {
+    int i;
+    if (n < 2) return 0;
+    if (n == 2) return 1;
+    if (n % 2 == 0) return 0;
+    for (i = 3; i * i <= n; i += 2) {
+        if (n % i == 0) return 0;
+    }
+    return 1;
+}
+
+int mcd(int a, int b) {
+    int t;
+    while (b != 0) {
+        t = a % b;
+        a = b;
+        b = t;
+    }
+    return a;
+}
+
+unsigned long long factorial(int n) {
+    unsigned long long f = 1ULL;
+    int i;
+    for (i = 2; i <= n; i++) f *= (unsigned long long)i;
+    return f;
+}
+
+/* sen(x) por serie: x - x^3/3! + x^5/5! - ... */
+void ps3_14_sen_serie(void) {
+    double x, term, suma, prev;
+    int k = 1;           /* término impar: 1,3,5,... */
+    int signos = 1;
+    int nterms = 0;
+
+    printf("Ingrese X (en radianes): ");
+    scanf("%lf", &x);
+
+    suma = 0.0;
+    term = x; /* primer término x^1/1! */
+    prev = 0.0;
+
+    while (fabs(suma - prev) > 0.001 || nterms == 0) {
+        prev = suma;
+        suma += signos * term;
+        nterms++;
+
+        k += 2; /* siguiente impar */
+        signos = -signos;
+
+        /* term = x^k / k! (incremental) */
+        term = pow(x, k) / (double)factorial(k);
+    }
+
+    printf("sen(x) aprox = %.6f\n", suma);
+    printf("Terminos usados = %d\n", nterms);
+}
+
+/* ---------- PS3.x (cada problema) ---------- */
+
+void ps3_1(void) { /* tabla multiplicar */
+    int n, i;
+    printf("Ingrese N (entero positivo): ");
+    scanf("%d", &n);
+    for (i = 1; i <= 10; i++) {
+        printf("%d x %d = %d\n", n, i, n * i);
+    }
+}
+
+void ps3_2(void) { /* 1/2 + 1/3 + ... + 1/N */
+    int n, i;
+    double s = 0.0;
+    printf("Ingrese N: ");
+    scanf("%d", &n);
+    for (i = 2; i <= n; i++) s += 1.0 / (double)i;
+    printf("Suma = %.6f\n", s);
+}
+
+void ps3_3(void) { /* (1/2)*(1/3)*...*(1/N) */
+    int n, i;
+    double p = 1.0;
+    printf("Ingrese N: ");
+    scanf("%d", &n);
+    for (i = 2; i <= n; i++) p *= 1.0 / (double)i;
+    printf("Productoria = %.10f\n", p);
+}
+
+void ps3_4(void) { /* contar positivos/negativos/nulos */
+    int n, i, x, pos=0, neg=0, nul=0;
+    printf("Ingrese N (cantidad de numeros): ");
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        printf("NUM%d: ", i);
+        scanf("%d", &x);
+        if (x > 0) pos++;
+        else if (x < 0) neg++;
+        else nul++;
+    }
+    printf("Positivos: %d\nNegativos: %d\nNulos: %d\n", pos, neg, nul);
+}
+
+void ps3_5(void) { /* productoria de los N primeros naturales */
+    int n, i;
+    unsigned long long prod = 1ULL;
+    printf("Ingrese N: ");
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) prod *= (unsigned long long)i;
+    printf("Productoria (N!) = %llu\n", prod);
+}
+
+void ps3_6(void) { /* promedios peso/altura >=18 por sexo */
+    int n, i, edad, sex;
+    double pes, alt;
+    double sumPesH=0, sumAltH=0, sumPesM=0, sumAltM=0;
+    int cH=0, cM=0;
+
+    printf("Ingrese N (personas): ");
+    scanf("%d", &n);
+
+    for (i = 1; i <= n; i++) {
+        printf("\nPersona %d\n", i);
+        printf("Edad: "); scanf("%d", &edad);
+        printf("Peso: "); scanf("%lf", &pes);
+        printf("Altura: "); scanf("%lf", &alt);
+        printf("Sexo (1=hombre, 0=mujer): "); scanf("%d", &sex);
+
+        if (edad >= 18) {
+            if (sex == 1) { sumPesH += pes; sumAltH += alt; cH++; }
+            else          { sumPesM += pes; sumAltM += alt; cM++; }
+        }
+    }
+
+    if (cH > 0) {
+        printf("\nHombres (>=18): Prom Peso=%.2f  Prom Altura=%.2f\n", sumPesH/cH, sumAltH/cH);
+    } else printf("\nHombres (>=18): no hay datos\n");
+
+    if (cM > 0) {
+        printf("Mujeres (>=18): Prom Peso=%.2f  Prom Altura=%.2f\n", sumPesM/cM, sumAltM/cM);
+    } else printf("Mujeres (>=18): no hay datos\n");
+}
+
+void ps3_7(void) { /* 11 - 22 + 33 - ... + NN */
+    int n, i;
+    long long s = 0;
+    int signo = 1;
+    printf("Ingrese N: ");
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        s += signo * (long long)(i * 11);
+        signo = -signo;
+    }
+    printf("Resultado = %lld\n", s);
+}
+
+void ps3_8(void) { /* evaluar función por rangos para N valores Y */
+    int n, i;
+    double y, fx;
+    printf("Ingrese N: ");
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        printf("Y%d: ", i);
+        scanf("%lf", &y);
+
+        if (y > 0 && y <= 15) fx = y * y;                    /* Y^2 */
+        else if (y > 15 && y <= 30) fx = pow(y, 3) - y*y + 12; /* aproximación por texto */
+        else if (y > 30 && y <= 60) fx = (4.0 * pow(y, 3)) / (y*y + 8.0); /* aproximación */
+        else fx = 0.0;
+
+        printf("F(Y%d)=%.4f\n", i, fx);
+    }
+    printf("\nNota: Esta función depende de cómo se interprete el formato del libro.\n");
+}
+
+void ps3_9(void) { /* temperaturas 6 regiones x 12 meses */
+    const char* reg[6] = {"NORTE","CENTRO","SUR","GOLFO","PACIFICO","CARIBE"};
+    double t[6][12];
+    double prom[6]={0};
+    int i,j;
+
+    double maxT=-1e9, minT=1e9;
+    int maxReg=0, maxMes=0, minReg=0, minMes=0;
+
+    printf("Ingrese temperaturas promedio mensuales (6 regiones x 12 meses):\n");
+    for (j=0; j<12; j++) {
+        printf("\nMes %d\n", j+1);
+        for (i=0; i<6; i++) {
+            printf("%s: ", reg[i]);
+            scanf("%lf", &t[i][j]);
+            prom[i] += t[i][j];
+
+            if (t[i][j] > maxT) { maxT = t[i][j]; maxReg=i; maxMes=j; }
+            if (t[i][j] < minT) { minT = t[i][j]; minReg=i; minMes=j; }
+        }
+    }
+
+    for (i=0; i<6; i++) prom[i] /= 12.0;
+
+    printf("\nPromedio anual por region:\n");
+    for (i=0; i<6; i++) printf("%s: %.2f\n", reg[i], prom[i]);
+
+    printf("\nMayor temperatura: %.2f (Region %s, Mes %d)\n", maxT, reg[maxReg], maxMes+1);
+    printf("Menor temperatura: %.2f (Region %s, Mes %d)\n", minT, reg[minReg], minMes+1);
+
+    /* comparar SUR (2), PACIFICO (4), CARIBE (5) */
+    int best = 2;
+    if (prom[4] > prom[best]) best = 4;
+    if (prom[5] > prom[best]) best = 5;
+    printf("\nMayor promedio anual entre SUR/PACIFICO/CARIBE: %s (%.2f)\n", reg[best], prom[best]);
+}
+
+void ps3_10(void) { /* ventas de boletos: 6 localidades */
+    double precio[6];
+    int cla, can;
+    int vendidos[6] = {0,0,0,0,0,0};
+    double total = 0.0;
+
+    int i;
+    printf("Ingrese precios L1..L6:\n");
+    for (i=0; i<6; i++) {
+        printf("L%d: ", i+1);
+        scanf("%lf", &precio[i]);
+    }
+
+    printf("\nIngrese ventas como (CLA, CAN). Para terminar: 0 0\n");
+    while (1) {
+        printf("CLA CAN: ");
+        scanf("%d %d", &cla, &can);
+        if (cla == 0 && can == 0) break;
+        if (cla < 1 || cla > 6 || can < 0) {
+            printf("Entrada invalida.\n");
+            continue;
+        }
+
+        double monto = precio[cla-1] * can;
+        vendidos[cla-1] += can;
+        total += monto;
+        printf("Monto de esta venta: %.2f\n", monto);
+    }
+
+    printf("\nBoletos vendidos por localidad:\n");
+    for (i=0; i<6; i++) {
+        printf("L%d: %d\n", i+1, vendidos[i]);
+    }
+    printf("Recaudacion total: %.2f\n", total);
+}
+
+void ps3_11(void) { /* vino: N años x 4 tipos */
+    int n, i, j;
+    double vin, totalTipo[4]={0,0,0,0};
+    printf("Ingrese N (años): ");
+    scanf("%d", &n);
+
+    for (i=1; i<=n; i++) {
+        double totalAnual = 0.0;
+        printf("\nAño %d (4 tipos):\n", i);
+        for (j=0; j<4; j++) {
+            printf("VIN%d (litros): ", j+1);
+            scanf("%lf", &vin);
+            totalTipo[j] += vin;
+            totalAnual += vin;
+        }
+        printf("Total producido en el año %d: %.2f\n", i, totalAnual);
+    }
+
+    printf("\nTotal producido por tipo (en %d años):\n", n);
+    for (j=0; j<4; j++) printf("Tipo %d: %.2f\n", j+1, totalTipo[j]);
+}
+
+void ps3_12(void) { /* primos menores que NUM */
+    int num, i;
+    printf("Ingrese NUM: ");
+    scanf("%d", &num);
+    printf("Primos menores que %d:\n", num);
+    for (i = 2; i < num; i++) if (es_primo(i)) printf("%d ", i);
+    printf("\n");
+}
+
+void ps3_13(void) { /* primos gemelos entre N1 y N2 */
+    int n1, n2, i;
+    printf("Ingrese N1 y N2: ");
+    scanf("%d %d", &n1, &n2);
+    if (n1 > n2) { int t=n1; n1=n2; n2=t; }
+
+    printf("Primos gemelos entre %d y %d:\n", n1, n2);
+    for (i = n1; i <= n2 - 2; i++) {
+        if (es_primo(i) && es_primo(i+2)) {
+            printf("(%d, %d)\n", i, i+2);
+        }
+    }
+}
+
+void ps3_14(void) { /* sen(x) serie */
+    ps3_14_sen_serie();
+}
+
+void ps3_15(void) { /* MCD */
+    int a, b;
+    printf("Ingrese N1 y N2: ");
+    scanf("%d %d", &a, &b);
+    if (a < 0) a = -a;
+    if (b < 0) b = -b;
+    printf("MCD = %d\n", mcd(a, b));
+}
+
+void ps3_16(void) { /* figura 1..N y baja (triángulo) */
+    int n, i, j;
+    printf("Ingrese N: ");
+    scanf("%d", &n);
+
+    for (i=1; i<=n; i++) {
+        for (j=1; j<=i; j++) printf("%d ", j);
+        printf("\n");
+    }
+    for (i=n-1; i>=1; i--) {
+        for (j=1; j<=i; j++) printf("%d ", j);
+        printf("\n");
+    }
+}
+
+void ps3_17(void) { /* figura pirámide centrada tipo 1; 1 2 1; ... */
+    int n, i, j;
+    printf("Ingrese N: ");
+    scanf("%d", &n);
+
+    for (i=1; i<=n; i++) {
+        for (j=1; j<=i; j++) printf("%d ", j);
+        for (j=i-1; j>=1; j--) printf("%d ", j);
+        printf("\n");
+    }
+}
+
+void ps3_18(void) { /* figura: fila i tiene 1..i..1 decreciendo longitudes */
+    int n, i, j;
+    printf("Ingrese N: ");
+    scanf("%d", &n);
+
+    for (i=n; i>=1; i--) {
+        for (j=1; j<=i; j++) printf("%d ", j);
+        for (j=i; j>=1; j--) printf("%d ", j);
+        printf("\n");
+    }
+}
+
+void ps3_19(void) { /* figura con dígitos que “dan la vuelta” 0..9 */
+    int r, c;
+    /* La figura del libro llega hasta 0..9 (10 filas). */
+    for (r=1; r<=10; r++) {
+        int start = (r-1) % 10;
+        int len = 2*r - 1;
+        int mid = r-1;
+
+        for (c=0; c<len; c++) {
+            int v;
+            if (c <= mid) v = (start + c) % 10;
+            else v = (start + (len-1 - c)) % 10;
+            printf("%d ", v);
+        }
+        printf("\n");
+    }
+}
+
+void ps3_20(void) { /* 7*T^4 - 6*P^3 + 12*R^5 < 5850, T,P,R positivos */
+    int T, P, R;
+
+    /* limites para que sea ejecutable (ajusta si tu profe pide otros rangos) */
+    int TMAX = 10;
+    int PMAX = 50;
+    int RMAX = 10;
+
+    printf("Buscando soluciones con limites: 1<=T<=%d, 1<=P<=%d, 1<=R<=%d\n", TMAX, PMAX, RMAX);
+    for (T=1; T<=TMAX; T++) {
+        for (P=1; P<=PMAX; P++) {
+            for (R=1; R<=RMAX; R++) {
+                double expr = 7.0*pow(T,4) - 6.0*pow(P,3) + 12.0*pow(R,5);
+                if (expr < 5850.0) {
+                    printf("T=%d P=%d R=%d  expr=%.2f\n", T, P, R, expr);
+                }
+            }
+        }
+    }
+
+    printf("\nNota: si el término de P^3 fuera +6*P^3 (en vez de -6*P^3), las soluciones serían finitas.\n");
+}
+
+/* ---------- Menú ---------- */
+
+int main(void) {
+    int op;
+    do {
+        printf("\n=== CAP 3 - PS3.1 a PS3.20 ===\n");
+        printf(" 1) PS3.1  Tabla multiplicar\n");
+        printf(" 2) PS3.2  Suma 1/2+...+1/N\n");
+        printf(" 3) PS3.3  Productoria (1/2)*(1/3)*...*(1/N)\n");
+        printf(" 4) PS3.4  Contar +, -, 0\n");
+        printf(" 5) PS3.5  Productoria primeros N naturales (N!)\n");
+        printf(" 6) PS3.6  Prom peso/altura >=18 por sexo\n");
+        printf(" 7) PS3.7  Serie 11-22+...+NN\n");
+        printf(" 8) PS3.8  Funcion por rangos (Y)\n");
+        printf(" 9) PS3.9  Temperaturas 6 regiones x 12 meses\n");
+        printf("10) PS3.10 Ventas boletos 6 localidades\n");
+        printf("11) PS3.11 Produccion vino N años x 4 tipos\n");
+        printf("12) PS3.12 Primos menores que NUM\n");
+        printf("13) PS3.13 Primos gemelos entre N1 y N2\n");
+        printf("14) PS3.14 sen(x) por serie\n");
+        printf("15) PS3.15 MCD de N1 y N2\n");
+        printf("16) PS3.16 Figura sube y baja (1..N)\n");
+        printf("17) PS3.17 Figura palindromica (1..i..1)\n");
+        printf("18) PS3.18 Figura decreciente (1..i..1)\n");
+        printf("19) PS3.19 Figura con digitos (wrap 0..9)\n");
+        printf("20) PS3.20 Soluciones desigualdad T,P,R\n");
+        printf(" 0) Salir\n");
+        printf("Opcion: ");
+        scanf("%d", &op);
+
+        switch(op) {
+            case 1: ps3_1(); break;
+            case 2: ps3_2(); break;
+            case 3: ps3_3(); break;
+            case 4: ps3_4(); break;
+            case 5: ps3_5(); break;
+            case 6: ps3_6(); break;
+            case 7: ps3_7(); break;
+            case 8: ps3_8(); break;
+            case 9: ps3_9(); break;
+            case 10: ps3_10(); break;
+            case 11: ps3_11(); break;
+            case 12: ps3_12(); break;
+            case 13: ps3_13(); break;
+            case 14: ps3_14(); break;
+            case 15: ps3_15(); break;
+            case 16: ps3_16(); break;
+            case 17: ps3_17(); break;
+            case 18: ps3_18(); break;
+            case 19: ps3_19(); break;
+            case 20: ps3_20(); break;
+            case 0: break;
+            default: printf("Opcion invalida.\n");
+        }
+
+    } while (op != 0);
+
+    return 0;
+}

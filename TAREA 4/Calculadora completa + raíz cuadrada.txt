@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <math.h>
+
+int main(void) {
+    int opcion = -1;
+
+    while (opcion != 0) {
+        printf("\n=== CALCULADORA ===\n");
+        printf("1) Suma (+)\n");
+        printf("2) Resta (-)\n");
+        printf("3) Multiplicacion (*)\n");
+        printf("4) Division (/)\n");
+        printf("5) Potencia (a^b)\n");
+        printf("6) Raiz cuadrada (sqrt)\n");
+        printf("0) Salir\n");
+        printf("Elige una opcion: ");
+        if (scanf("%d", &opcion) != 1) {
+            printf("Entrada invalida.\n");
+            return 0;
+        }
+
+        if (opcion == 0) break;
+
+        if (opcion >= 1 && opcion <= 5) {
+            double a, b, r;
+            printf("Ingresa a: ");
+            scanf("%lf", &a);
+            printf("Ingresa b: ");
+            scanf("%lf", &b);
+
+            switch (opcion) {
+                case 1:
+                    r = a + b;
+                    printf("Resultado: %.10g\n", r);
+                    break;
+                case 2:
+                    r = a - b;
+                    printf("Resultado: %.10g\n", r);
+                    break;
+                case 3:
+                    r = a * b;
+                    printf("Resultado: %.10g\n", r);
+                    break;
+                case 4:
+                    if (b == 0) {
+                        printf("Error: division entre 0.\n");
+                    } else {
+                        r = a / b;
+                        printf("Resultado: %.10g\n", r);
+                    }
+                    break;
+                case 5:
+                    r = pow(a, b);
+                    printf("Resultado: %.10g\n", r);
+                    break;
+            }
+        } else if (opcion == 6) {
+            double x;
+            printf("Ingresa x: ");
+            scanf("%lf", &x);
+
+            if (x < 0) {
+                printf("Error: no existe sqrt real para negativos.\n");
+            } else {
+                printf("Resultado: %.10g\n", sqrt(x));
+            }
+        } else {
+            printf("Opcion invalida.\n");
+        }
+    }
+
+    printf("\nListo. Saliendo...\n");
+    return 0;
+}

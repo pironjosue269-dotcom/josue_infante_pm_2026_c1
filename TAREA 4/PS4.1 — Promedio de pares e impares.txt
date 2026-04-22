@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+int main(void){
+    int N;
+    long long sumP=0, sumI=0;
+    int cP=0, cI=0;
+
+    printf("N (1..500): ");
+    scanf("%d", &N);
+
+    for(int i=1;i<=N;i++){
+        int num;
+        printf("NUM%d: ", i);
+        scanf("%d",&num);
+        if(num % 2 == 0){ sumP += num; cP++; }
+        else { sumI += num; cI++; }
+    }
+
+    if(cP>0) printf("Promedio pares: %.4f\n", (double)sumP/cP);
+    else printf("Promedio pares: (no hay pares)\n");
+
+    if(cI>0) printf("Promedio impares: %.4f\n", (double)sumI/cI);
+    else printf("Promedio impares: (no hay impares)\n");
+
+    return 0;
+}

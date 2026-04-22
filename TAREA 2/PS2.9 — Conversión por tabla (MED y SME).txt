@@ -1,0 +1,50 @@
+#include <stdio.h>
+
+int main(void){
+    int MED, SME;
+    double VAL, res=0;
+
+    printf("MED (1=longitud/area, 2=volumen, 3=peso): ");
+    scanf("%d", &MED);
+
+    printf("SME (subopcion segun tu tabla): ");
+    scanf("%d", &SME);
+
+    printf("VAL: ");
+    scanf("%lf", &VAL);
+
+    if (MED == 1){
+        // 1 in->mm, 2 yd->m, 3 mi->km, 4 in2->cm2, 5 ft2->m2, 6 yd2->m2, 7 acre->ha, 8 mi2->km2
+        if (SME==1) res = VAL * 25.40;
+        else if (SME==2) res = VAL * 0.9144;
+        else if (SME==3) res = VAL * 1.6093;
+        else if (SME==4) res = VAL * 6.452;
+        else if (SME==5) res = VAL * 0.09290;
+        else if (SME==6) res = VAL * 0.8361;
+        else if (SME==7) res = VAL * 0.4047;
+        else if (SME==8) res = VAL * 2.59;
+        else { printf("SME invalido\n"); return 0; }
+
+    } else if (MED == 2){
+        // 1 ft3->m3, 2 yd3->m3, 3 pinta->L, 4 galon->L
+        if (SME==1) res = VAL * 0.02832;
+        else if (SME==2) res = VAL * 0.7646;
+        else if (SME==3) res = VAL * 0.56826;
+        else if (SME==4) res = VAL * 4.54609;
+        else { printf("SME invalido\n"); return 0; }
+
+    } else if (MED == 3){
+        // 1 onza->g, 2 libra->kg, 3 ton inglesa->ton
+        if (SME==1) res = VAL * 28.35;
+        else if (SME==2) res = VAL * 0.45359;
+        else if (SME==3) res = VAL * 1.0160;
+        else { printf("SME invalido\n"); return 0; }
+
+    } else {
+        printf("MED invalido\n");
+        return 0;
+    }
+
+    printf("Resultado: %.5f\n", res);
+    return 0;
+}

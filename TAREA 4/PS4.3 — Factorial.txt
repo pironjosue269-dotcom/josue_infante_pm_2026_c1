@@ -1,0 +1,19 @@
+#include <stdio.h>
+
+int main(void){
+    int N;
+    unsigned long long f = 1;
+
+    printf("N (>=0): ");
+    scanf("%d", &N);
+
+    if(N < 0){
+        printf("No puede ser negativo\n");
+        return 0;
+    }
+
+    for(int i=2;i<=N;i++) f *= (unsigned long long)i;
+
+    printf("Factorial(%d) = %llu\n", N, f);
+    return 0;
+}

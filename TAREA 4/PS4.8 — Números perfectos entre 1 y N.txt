@@ -1,0 +1,36 @@
+#include <stdio.h>
+
+long long suma_divisores_propios(int n){
+    if(n <= 1) return 0;
+    long long s = 1;
+    for(int d=2; d*d<=n; d++){
+        if(n % d == 0){
+            s += d;
+            if(d*d != n) s += (n/d);
+        }
+    }
+    return s;
+}
+
+int main(void){
+    int N;
+    printf("N: ");
+    scanf("%d", &N);
+
+    if(N < 1){
+        printf("N debe ser >= 1\n");
+        return 0;
+    }
+
+    printf("Perfectos entre 1 y %d:\n", N);
+    int found = 0;
+    for(int x=2; x<=N; x++){
+        if(suma_divisores_propios(x) == x){
+            printf("%d ", x);
+            found = 1;
+        }
+    }
+    if(!found) printf("(ninguno)");
+    printf("\n");
+    return 0;
+}

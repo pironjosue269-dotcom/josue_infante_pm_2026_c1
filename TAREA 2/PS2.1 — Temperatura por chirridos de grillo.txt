@@ -1,0 +1,13 @@
+#include <stdio.h>
+
+int main(void){
+    int S;
+    double FA;
+
+    printf("Chirridos por minuto (S): ");
+    scanf("%d", &S);
+
+    FA = S / 4.0 + 40.0;
+    printf("Temperatura (F): %.2f\n", FA);
+    return 0;
+}

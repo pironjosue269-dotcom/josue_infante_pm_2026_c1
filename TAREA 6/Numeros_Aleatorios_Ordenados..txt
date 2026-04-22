@@ -1,0 +1,182 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int compararEnteros(const void *a, const void *b);
+void crearArchivoAleatorio(const char *nombreArchivo, int n);
+int contarNumerosEnArchivo(const char *nombreArchivo);
+int *leerNumerosArchivo(const char *nombreArchivo, int n);
+void guardarNumerosOrdenados(const char *nombreArchivo, int *numeros, int n);
+void mostrarArreglo(int *numeros, int n);
+
+int main(void)
+{
+    int n;
+    int *numeros;
+    int cantidadLeida;
+
+    printf("Ingrese la cantidad de numeros aleatorios: ");
+    scanf("%d", &n);
+
+    if (n <= 0)
+    {
+        printf("La cantidad debe ser mayor que cero.\n");
+        return 1;
+    }
+
+    crearArchivoAleatorio("numeros.txt", n);
+
+    cantidadLeida = contarNumerosEnArchivo("numeros.txt");
+    if (cantidadLeida <= 0)
+    {
+        printf("No se pudieron leer numeros del archivo.\n");
+        return 1;
+    }
+
+    numeros = leerNumerosArchivo("numeros.txt", cantidadLeida);
+    if (numeros == NULL)
+    {
+        printf("Error al reservar memoria dinamica.\n");
+        return 1;
+    }
+
+    printf("\nNumeros leidos del archivo:\n");
+    mostrarArreglo(numeros, cantidadLeida);
+
+    qsort(numeros, cantidadLeida, sizeof(int), compararEnteros);
+
+    printf("\nNumeros ordenados:\n");
+    mostrarArreglo(numeros, cantidadLeida);
+
+    guardarNumerosOrdenados("numeros_ordenados.txt", numeros, cantidadLeida);
+
+    free(numeros);
+
+    printf("\nProceso completado correctamente.\n");
+    printf("Archivo original: numeros.txt\n");
+    printf("Archivo ordenado: numeros_ordenados.txt\n");
+
+    return 0;
+}
+
+int compararEnteros(const void *a, const void *b)
+{
+    int num1 = *(const int *)a;
+    int num2 = *(const int *)b;
+
+    if (num1 < num2)
+        return -1;
+    if (num1 > num2)
+        return 1;
+    return 0;
+}
+
+void crearArchivoAleatorio(const char *nombreArchivo, int n)
+{
+    FILE *archivo;
+    int i, numero;
+
+    archivo = fopen(nombreArchivo, "w");
+    if (archivo == NULL)
+    {
+        printf("No se pudo crear el archivo %s\n", nombreArchivo);
+        exit(1);
+    }
+
+    srand((unsigned int)time(NULL));
+
+    for (i = 0; i < n; i++)
+    {
+        numero = rand() % 1000; /* numeros entre 0 y 999 */
+        fprintf(archivo, "%d\n", numero);
+    }
+
+    fclose(archivo);
+}
+
+int contarNumerosEnArchivo(const char *nombreArchivo)
+{
+    FILE *archivo;
+    int contador = 0;
+    int numero;
+
+    archivo = fopen(nombreArchivo, "r");
+    if (archivo == NULL)
+    {
+        printf("No se pudo abrir el archivo %s\n", nombreArchivo);
+        return 0;
+    }
+
+    while (fscanf(archivo, "%d", &numero) == 1)
+    {
+        contador++;
+    }
+
+    fclose(archivo);
+    return contador;
+}
+
+int *leerNumerosArchivo(const char *nombreArchivo, int n)
+{
+    FILE *archivo;
+    int *numeros;
+    int i;
+
+    archivo = fopen(nombreArchivo, "r");
+    if (archivo == NULL)
+    {
+        printf("No se pudo abrir el archivo %s\n", nombreArchivo);
+        return NULL;
+    }
+
+    numeros = (int *)malloc(n * sizeof(int));
+    if (numeros == NULL)
+    {
+        fclose(archivo);
+        return NULL;
+    }
+
+    for (i = 0; i < n; i++)
+    {
+        if (fscanf(archivo, "%d", &numeros[i]) != 1)
+        {
+            free(numeros);
+            fclose(archivo);
+            return NULL;
+        }
+    }
+
+    fclose(archivo);
+    return numeros;
+}
+
+void guardarNumerosOrdenados(const char *nombreArchivo, int *numeros, int n)
+{
+    FILE *archivo;
+    int i;
+
+    archivo = fopen(nombreArchivo, "w");
+    if (archivo == NULL)
+    {
+        printf("No se pudo crear el archivo %s\n", nombreArchivo);
+        exit(1);
+    }
+
+    for (i = 0; i < n; i++)
+    {
+        fprintf(archivo, "%d\n", numeros[i]);
+    }
+
+    fclose(archivo);
+}
+
+void mostrarArreglo(int *numeros, int n)
+{
+    int i;
+
+    for (i = 0; i < n; i++)
+    {
+        printf("%d ", numeros[i]);
+    }
+    printf("\n");
+}

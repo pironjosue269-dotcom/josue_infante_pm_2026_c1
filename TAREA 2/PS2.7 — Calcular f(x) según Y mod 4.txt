@@ -1,0 +1,20 @@
+#include <stdio.h>
+
+int main(void){
+    int Y, r;
+    double fx;
+
+    printf("Y (entero): ");
+    scanf("%d", &Y);
+
+    r = Y % 4;
+    if (r < 0) r += 4;
+
+    if (r == 0) fx = (double)Y*Y*Y;
+    else if (r == 1) fx = ((double)Y*Y - 14.0) / ((double)Y*Y*Y);
+    else if (r == 2) fx = (double)Y*Y*Y + 5.0;
+    else fx = -(double)Y;
+
+    printf("f(x): %.6f\n", fx);
+    return 0;
+}

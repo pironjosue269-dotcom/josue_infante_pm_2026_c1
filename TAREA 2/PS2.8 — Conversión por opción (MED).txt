@@ -1,0 +1,20 @@
+#include <stdio.h>
+
+int main(void){
+    int MED;
+    double VAL, res;
+
+    printf("MED (1=pulg->mm, 2=yarda->m, 3=milla->km): ");
+    scanf("%d", &MED);
+
+    printf("VAL: ");
+    scanf("%lf", &VAL);
+
+    if (MED == 1) res = VAL * 25.40;
+    else if (MED == 2) res = VAL * 0.9144;
+    else if (MED == 3) res = VAL * 1.6093;
+    else { printf("MED invalido\n"); return 0; }
+
+    printf("Resultado: %.5f\n", res);
+    return 0;
+}

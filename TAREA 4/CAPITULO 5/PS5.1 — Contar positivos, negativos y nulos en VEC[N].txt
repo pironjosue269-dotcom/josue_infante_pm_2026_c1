@@ -1,0 +1,19 @@
+#include <stdio.h>
+
+int main(void){
+    int N, x, pos=0, neg=0, nul=0;
+
+    printf("N (1..100): ");
+    scanf("%d", &N);
+
+    for(int i=1;i<=N;i++){
+        printf("VEC%d: ", i);
+        scanf("%d", &x);
+        if(x>0) pos++;
+        else if(x<0) neg++;
+        else nul++;
+    }
+
+    printf("Positivos: %d\nNegativos: %d\nNulos: %d\n", pos, neg, nul);
+    return 0;
+}

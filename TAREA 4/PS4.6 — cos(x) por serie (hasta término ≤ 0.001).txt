@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <math.h>
+
+int main(void){
+    double x, suma, term;
+    int k = 0, terms = 1;
+
+    printf("X (radianes): ");
+    scanf("%lf", &x);
+
+    suma = 1.0;
+    term = 1.0;
+
+    while(1){
+        k++;
+        term *= (-x*x) / ((2.0*k - 1.0) * (2.0*k));
+        suma += term;
+        terms++;
+
+        if(fabs(term) <= 0.001) break;
+        if(terms > 100000) break;
+    }
+
+    printf("cos(x) aprox: %.6f\n", suma);
+    printf("Terminos: %d\n", terms);
+    return 0;
+}

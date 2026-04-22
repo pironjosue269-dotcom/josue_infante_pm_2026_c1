@@ -1,0 +1,28 @@
+#include <stdio.h>
+
+long long suma_divisores_propios(int n){
+    if(n <= 1) return 0;
+    long long s = 1;
+    for(int d=2; d*d<=n; d++){
+        if(n % d == 0){
+            s += d;
+            if(d*d != n) s += (n/d);
+        }
+    }
+    return s;
+}
+
+int main(void){
+    int count = 0;
+    int x = 2;
+
+    printf("Primeros 30 numeros perfectos:\n");
+    while(count < 30){
+        if(suma_divisores_propios(x) == x){
+            printf("%d%s", x, (count==29) ? "\n" : " ");
+            count++;
+        }
+        x++;
+    }
+    return 0;
+}

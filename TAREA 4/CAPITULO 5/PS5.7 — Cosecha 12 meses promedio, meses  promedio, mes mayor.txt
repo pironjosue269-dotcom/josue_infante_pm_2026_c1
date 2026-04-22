@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+int main(void){
+    double COS[12], sum=0;
+    int imax=0, cont=0;
+
+    printf("Ingrese 12 valores:\n");
+    for(int i=0;i<12;i++){
+        printf("Mes %d: ", i+1);
+        scanf("%lf",&COS[i]);
+        sum += COS[i];
+        if(COS[i] > COS[imax]) imax=i;
+    }
+
+    double prom = sum/12.0;
+    for(int i=0;i<12;i++) if(COS[i] > prom) cont++;
+
+    printf("Promedio anual: %.2f\n", prom);
+    printf("Meses > promedio: %d\n", cont);
+    printf("Mayor cosecha: Mes %d con %.2f\n", imax+1, COS[imax]);
+
+    return 0;
+}

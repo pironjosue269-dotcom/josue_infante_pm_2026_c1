@@ -1,0 +1,18 @@
+#include <stdio.h>
+
+int main(void){
+    int N;
+    long long s = 0;
+    int signo = 1;
+
+    printf("N (terminos): ");
+    scanf("%d", &N);
+
+    for(int i=1;i<=N;i++){
+        s += signo * (long long)(11*i);
+        signo = -signo;
+    }
+
+    printf("Resultado: %lld\n", s);
+    return 0;
+}

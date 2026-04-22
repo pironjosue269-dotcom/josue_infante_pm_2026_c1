@@ -1,0 +1,22 @@
+#include <stdio.h>
+
+int main(void){
+    double SAL, total;
+    int CAT, PHE, pagables, tarifa=0;
+
+    printf("SAL CAT PHE: ");
+    scanf("%lf %d %d", &SAL, &CAT, &PHE);
+
+    pagables = PHE;
+    if (pagables > 30) pagables = 30;
+    if (pagables < 0) pagables = 0;
+
+    if (CAT == 1) tarifa = 40;
+    else if (CAT == 2) tarifa = 50;
+    else if (CAT == 3) tarifa = 85;
+    else tarifa = 0; // CAT>=4 o invalida
+
+    total = SAL + (double)tarifa * pagables;
+    printf("Total a pagar: %.2f\n", total);
+    return 0;
+}
